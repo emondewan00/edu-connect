@@ -2,8 +2,12 @@ import CourseIntro from "./_components/CourseIntro";
 import CourseDetails from "./_components/CourseDetails";
 import Testimonials from "./_components/Testimonials";
 import RelatedCourses from "./_components/RelatedCourses";
+import { getCourse } from "@/queries/courses";
+import connectDB from "@/lib/connectDB";
 
-const SingleCoursePage = () => {
+const SingleCoursePage = async ({params:{id}}) => {
+  await connectDB();
+  const course = await getCourse(id);
   return (
     <>
       <CourseIntro />
