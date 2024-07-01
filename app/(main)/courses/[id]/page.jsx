@@ -4,17 +4,28 @@ import Testimonials from "./_components/Testimonials";
 import RelatedCourses from "./_components/RelatedCourses";
 import { getCourse } from "@/queries/courses";
 import connectDB from "@/lib/connectDB";
+import { replaceMongoIdInArray } from "@/lib/convertData";
 
-const SingleCoursePage = async ({params:{id}}) => {
+const SingleCoursePage = async ({ params: { id } }) => {
   await connectDB();
   const course = await getCourse(id);
   return (
     <>
-      <CourseIntro />
-      <CourseDetails />
+      <CourseIntro
+        subTitle={course.subtitle}
+        thumbnail={course.thumbnail}
+        title={course.title}
+      />
+      <CourseDetails course={course} />
       {/* Testimonials */}
-      <Testimonials />
-      {/* Releated Course */}
+
+      {course.testimonials.length > 0 && (
+        <Testimonials
+          testimonials={replaceMongoIdInArray(course.testimonials)}
+        />
+      )}
+
+      {/* Related Course */}
       <RelatedCourses />
       {/* Authors */}
       {/* https://avatars.githubusercontent.com/u/1416832?v=4 */}
