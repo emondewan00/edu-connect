@@ -23,10 +23,20 @@ import Image from "next/image";
 import Overview from "./Overview";
 import Curriculum from "./Curriculum";
 import Instructor from "./Instructor";
+import { formatMyDate } from "@/lib/date";
 
 const CourseDetails = ({ course }) => {
-  const { title, subtitle, category, instructor, modifiedOn } = course;
-  const { profilePicture, first_name, last_name } = instructor;
+  const {
+    title,
+    subtitle,
+    category,
+    instructor,
+    modifiedOn,
+    description,
+    learning,
+  } = course;
+  const { profile_picture, first_name, last_name } = instructor;
+  console.log(course);
   return (
     <section className="py-8 md:py-12 lg:py-24">
       <div className="container">
@@ -44,14 +54,14 @@ const CourseDetails = ({ course }) => {
               width={40}
               height={40}
               className="w-[40px] h-[40px] rounded-full"
-              src={profilePicture}
+              src={profile_picture}
               alt={first_name}
             />
             <p className="font-bold">{first_name + " " + last_name}</p>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-success font-semibold">Last Updated: </span>
-            <span>Feb 22, 2022</span>
+            <span>{formatMyDate(modifiedOn)}</span>
           </div>
         </div>
 
@@ -65,15 +75,12 @@ const CourseDetails = ({ course }) => {
               {/* <TabsTrigger value="reviews">Reviews</TabsTrigger> */}
             </TabsList>
             <TabsContent value="overview">
-              {/* each tab content can be independent component */}
-              <Overview />
+              <Overview content={{ learning, description }} />
             </TabsContent>
             <TabsContent value="curriculum">
-              {/* each tab content can be independent component */}
-              <Curriculum />
+              <Curriculum course={course} />
             </TabsContent>
             <TabsContent value="instructor">
-              {/* each tab content can be independent component */}
               <Instructor />
             </TabsContent>
           </Tabs>
