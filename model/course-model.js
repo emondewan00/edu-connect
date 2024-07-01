@@ -5,6 +5,10 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
+  subTitle: {
+    type: String,
+    required: true,
+  },
   description: {
     type: String,
     required: true,
@@ -46,6 +50,25 @@ const courseSchema = new Schema({
       ref: "Testimonial",
     },
   ],
+  quizSet: {
+    type: Schema.Types.ObjectId,
+    ref: "QuizSet",
+    required: true,
+  },
+  createdOn: {
+    type: Date,
+    default: Date.now,
+  },
+  learning: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  modifiedOn: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export const Course =
