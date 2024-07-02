@@ -9,7 +9,6 @@ const Instructor = async ({ instructor }) => {
   const fullName = `${first_name}  ${last_name}`;
   await connectDB();
   const courseDetails = await getCourseByInstructor(_id);
-  console.log(courseDetails, "courseDetails");
   return (
     <div className="bg-gray-50 rounded-md p-8">
       <div className="md:flex md:gap-x-5 mb-8">
@@ -29,19 +28,19 @@ const Instructor = async ({ instructor }) => {
             <ul className="list space-y-4">
               <li className="flex items-center space-x-3">
                 <Presentation className="text-gray-600" />
-                <div>{courseDetails?.courses}+ Courses</div>
+                <div>{courseDetails?.courses} Courses</div>
               </li>
               <li className="flex space-x-3">
                 <UsersRound className="text-gray-600" />
-                <div>2k+ Student Learned</div>
+                <div>{courseDetails.totalEnrollments} Student Learned</div>
               </li>
               <li className="flex space-x-3">
                 <MessageSquare className="text-gray-600" />
-                <div>1500+ Reviews</div>
+                <div>{courseDetails.reviews} Reviews</div>
               </li>
               <li className="flex space-x-3">
                 <Star className="text-gray-600" />
-                <div>4.9 Average Rating</div>
+                <div>{courseDetails.ratings} Average Rating</div>
               </li>
             </ul>
           </div>

@@ -17,7 +17,7 @@ const testimonialSchema = new Schema({
     required: true,
     index: true,
   },
-  userId: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,

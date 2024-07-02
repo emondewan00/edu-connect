@@ -5,7 +5,6 @@ import { Testimonial } from "@/model/testimonial-model";
 import { Module } from "@/model/module-model";
 import {
   replaceMongoIdInArray,
-  replaceMongoIdInObject,
 } from "@/lib/convertData";
 import { getEnrollmentsByCourseId } from "./enrollments";
 import { getTestimonialsByCourseId } from "./testimonial";
@@ -49,7 +48,7 @@ export const getCourse = async (id) => {
       path: "testimonials",
       model: Testimonial,
       populate: {
-        path: "userId",
+        path: "user",
         model: User,
       },
     })

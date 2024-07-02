@@ -33,7 +33,7 @@ const Testimonials = ({ testimonials }) => {
                   <blockquote className="rounded-lg bg-gray-50 p-6  sm:p-8 shadow-sm">
                     <div className="flex items-center gap-4">
                       <Image
-                        alt={testimonial?.userId?.first_name}
+                        alt={testimonial?.user?.first_name}
                         src={"https://i.pravatar.cc/56"}
                         width="56"
                         height="56"
@@ -41,9 +41,9 @@ const Testimonials = ({ testimonials }) => {
                       />
                       <div>
                         <p className="mt-0.5 text-lg font-medium text-gray-900">
-                          {testimonial?.userId?.first_name +
+                          {testimonial?.user?.first_name +
                             " " +
-                            testimonial?.userId?.last_name}
+                            testimonial?.user?.last_name}
                         </p>
                         <StarRating rating={testimonial.rating} />
                       </div>
