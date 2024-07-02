@@ -7,7 +7,8 @@ import {
   replaceMongoIdInArray,
   replaceMongoIdInObject,
 } from "@/lib/convertData";
-import { Enrollment } from "@/model/enrollment-model";
+import { getEnrollmentsByCourseId } from "./enrollments";
+import { getTestimonialsByCourseId } from "./testimonial";
 export const getCourses = async () => {
   const courses = await Course.find()
     .populate({
@@ -58,8 +59,31 @@ export const getCourse = async (id) => {
 
 export const getCourseByInstructor = async (id) => {
   const courses = await Course.find({ instructor: id }).lean();
+  const enrollments = await Promise.all(
+    courses.map(async (course) => {
+      const enrollment = await getEnrollmentsByCourseId(course._id);
+      return enrollment;
+    })
+  );
+  const totalEnrollments = enrollments.reduce((totalEnrollment, enrollment) => {
+    return totalEnrollment + enrollment.length;
+  }, 0);
+  const testimonials = await Promise.all(
+    courses.map(async (course) => {
+      const testimonial = await getTestimonialsByCourseId(course._id);
+      return testimonial;
+    })
+  );
 
+  const totalTestimonials = testimonials.flat();
+  let avgTestimonials = totalTestimonials.reduce((acc, testimonial) => {
+    return acc + testimonial.rating;
+  }, 0);
+  avgTestimonials /= totalTestimonials.length;
   return {
     courses: courses.length,
+    totalEnrollments,
+    reviews: totalTestimonials.length,
+    ratings: avgTestimonials.toFixed(2),
   };
 };
