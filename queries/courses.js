@@ -7,6 +7,7 @@ import {
   replaceMongoIdInArray,
   replaceMongoIdInObject,
 } from "@/lib/convertData";
+import { Enrollment } from "@/model/enrollment-model";
 export const getCourses = async () => {
   const courses = await Course.find()
     .populate({
