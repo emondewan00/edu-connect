@@ -54,3 +54,11 @@ export const getCourse = async (id) => {
     .lean();
   return course;
 };
+
+export const getCourseByInstructor = async (id) => {
+  const courses = await Course.find({ instructor: id }).lean();
+
+  return {
+    courses: courses.length,
+  };
+};

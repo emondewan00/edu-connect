@@ -36,7 +36,7 @@ const CourseDetails = ({ course }) => {
     learning,
   } = course;
   const { profile_picture, first_name, last_name } = instructor;
-
+console.log(instructor)
   return (
     <section className="py-8 md:py-12 lg:py-24">
       <div className="container">
@@ -81,7 +81,7 @@ const CourseDetails = ({ course }) => {
               <Curriculum course={course} />
             </TabsContent>
             <TabsContent value="instructor">
-              <Instructor />
+              <Instructor instructor={instructor} />
             </TabsContent>
           </Tabs>
         </div>
