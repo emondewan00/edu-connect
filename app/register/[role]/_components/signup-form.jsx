@@ -18,13 +18,14 @@ export function SignupForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({mode:"onChange"});
+  } = useForm();
+
+  const password = watch("confirmPassword");
 
   const onSubmit = async (data) => {
-    console.log("Signup data:", data);
     const result = await singUp(data);
-    console.log("Signup result:", result);
   };
 
   return (
