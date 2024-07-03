@@ -21,15 +21,14 @@ const userSchema = new Schema({
   },
   phone: {
     type: String,
-    required: true,
   },
   role: {
     type: String,
     required: true,
+    default:"student",
   },
   bio: {
     type: String,
-    required: true,
     maxlength: 500,
   },
   socialMedia: {
