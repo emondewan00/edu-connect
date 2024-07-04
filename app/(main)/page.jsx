@@ -11,12 +11,14 @@ import CourseCard from "./courses/_components/CourseCard";
 import connectDB from "@/lib/connectDB";
 import { getCourses } from "@/queries/courses";
 import { getCategories } from "@/queries/categories";
+import { auth } from "@/auth";
 
 const HomePage = async () => {
   await connectDB();
   const courses = await getCourses();
   const categories = await getCategories();
-  console.log(courses, categories);
+  const session = await auth();
+  console.log(session,"session");
   return (
     <>
       <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32 grainy">
@@ -44,7 +46,10 @@ const HomePage = async () => {
             way.”
           </p>
           <div className="flex items-center gap-3 flex-wrap justify-center">
-            <Link href="/courses" className={cn(buttonVariants({ size: "lg" }))}>
+            <Link
+              href="/courses"
+              className={cn(buttonVariants({ size: "lg" }))}
+            >
               Explore Now
             </Link>
             <Link

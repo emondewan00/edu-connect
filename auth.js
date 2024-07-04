@@ -1,29 +1,55 @@
 import NextAuth from "next-auth";
-import authConfig from "./auth.config";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "./model/user-model";
 import bcrypt from "bcrypt";
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-  ...authConfig,
+export const {
+  handlers: { GET, POST },
+  signIn,
+  signOut,
+  auth,
+} = NextAuth({
+  secret: process.env.AUTH_SECRET,
+
   providers: [
     CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: {},
+        password: {},
+      },
       async authorize(credentials) {
         if (credentials == null) return null;
         try {
-          const user = await User.findOne({ email: credentials.email });
-          if (!user) return "user not found";
-
-          const isValid = bcrypt.compare(credentials.password, user.password);
-
-          if (!isValid) return "invalid password";
-
-          return user;
+          const user = await User.findOne({ email: credentials.email }).lean();
+          if (!user) return null;
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          if (!isValid) return null;
+          return { ...user, id: user._id.toString() };
         } catch (error) {
           console.error(error);
-          return error.message;
+          return null;
         }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token) {
+        session.user.id = token.id;
+        session.user.email = token.email;
+      }
+      return session;
+    },
+  },
 });

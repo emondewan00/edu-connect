@@ -22,7 +22,6 @@ export function LoginForm() {
   const onSubmit = async (data) => {
     const result = await credentialLogin(data);
     setError(result.message);
-    console.log(result);
     if (result.ok) router.push("/");
   };
   return (
