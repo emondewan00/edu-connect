@@ -23,7 +23,7 @@ import { useSession, signOut } from "next-auth/react";
 export function MainNav({ items, children }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const session = useSession();
-  console.log(session);
+
   return (
     <>
       <div className="flex gap-6 lg:gap-10">

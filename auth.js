@@ -2,15 +2,15 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "./model/user-model";
 import bcrypt from "bcrypt";
-
+import authConfig from "./auth.config";
+import connectDB from "./lib/connectDB";
 export const {
   handlers: { GET, POST },
   signIn,
   signOut,
   auth,
 } = NextAuth({
-  secret: process.env.AUTH_SECRET,
-
+  ...authConfig,
   providers: [
     CredentialsProvider({
       name: "credentials",
@@ -21,6 +21,7 @@ export const {
       async authorize(credentials) {
         if (credentials == null) return null;
         try {
+          await connectDB();
           const user = await User.findOne({ email: credentials.email }).lean();
           if (!user) return null;
           const isValid = await bcrypt.compare(
