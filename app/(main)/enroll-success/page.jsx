@@ -1,8 +1,20 @@
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { getCourse } from "@/queries/courses";
 import { CircleCheck } from "lucide-react";
 import Link from "next/link";
 
-const Success = () => {
+const Success = async ({ searchParams: { session_id, course_id } }) => {
+  const userSession = await auth();
+  if (!session_id) {
+    throw new Error("Please provide a valid session");
+  }
+
+  const course = await getCourse(course_id);
+  console.log(`Course ${course} and session ${session_id}`);
+
+
+  
   return (
     <div className="h-full w-full flex-1 flex flex-col items-center justify-center">
       <div className="flex flex-col items-center gap-6 max-w-[600px] text-center">

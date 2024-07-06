@@ -21,7 +21,7 @@ export async function createCheckoutSession(data) {
       },
     ],
     success_url: `${origin}/enroll-success?session_id={CHECKOUT_SESSION_ID}&course_id=${courseId}`,
-    cancel_url: `${origin}/dashboard`,
+    cancel_url: `${origin}/courses`,
     ui_mode: "hosted",
     mode: "payment",
   });
@@ -30,4 +30,19 @@ export async function createCheckoutSession(data) {
     client_secret: checkoutSession.client_secret,
     url: checkoutSession.url,
   };
+}
+
+export async function createPaymentIntent(data) {
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 100,
+      automatic_payment_methods: { enabled: true },
+
+      currency: "USD",
+    });
+
+    return { client_secret: paymentIntent.client_secret };
+  } catch (error) {
+    console.log(error,"error creating payment intent ");
+  }
 }

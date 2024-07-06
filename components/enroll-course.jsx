@@ -2,14 +2,16 @@
 import { ArrowRight } from "lucide-react";
 import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { createCheckoutSession } from "@/actions/stripe";
+import { createCheckoutSession, createPaymentIntent } from "@/actions/stripe";
 
 const EnrollCourse = ({ variant, course }) => {
   const formAction = async (data) => {
+    const intent = await createPaymentIntent();
+    console.log(intent, "payment intent");
     const { url } = await createCheckoutSession(data);
     window.location.assign(url);
   };
-  console.log(course, "course");
+
   return (
     <form action={formAction}>
       <input type="hidden" name="courseId" value={course.id} />
