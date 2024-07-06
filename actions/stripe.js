@@ -3,7 +3,8 @@ import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
 
 export async function createCheckoutSession(data) {
-  const session = await stripe.checkout.sessions.create({
+  const origin = headers().get("origin");
+  const checkoutSession = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
       {
@@ -18,7 +19,14 @@ export async function createCheckoutSession(data) {
         },
       },
     ],
-    success_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
-    cancel_url: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
+    success_url: `${origin}/enroll-success?session_id={CHECKOUT_SESSION_ID}&course_id=123456`,
+    cancel_url: `${origin}/dashboard`,
+    ui_mode: "hosted",
+    mode: "payment",
   });
+
+  return {
+    client_secret: checkoutSession.client_secret,
+    url: checkoutSession.url,
+  };
 }
