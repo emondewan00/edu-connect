@@ -4,6 +4,8 @@ import { stripe } from "@/lib/stripe";
 
 export async function createCheckoutSession(data) {
   const origin = headers().get("origin");
+  const courseId = data.get("courseId");
+  const price = data.get("price") * 100;
   const checkoutSession = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     line_items: [
@@ -12,14 +14,13 @@ export async function createCheckoutSession(data) {
         price_data: {
           currency: "usd",
           product_data: {
-            name: "EduConnect Subscription",
-            description: "Monthly subscription",
+            name: data.get("courseName"),
           },
-          unit_amount: 100,
+          unit_amount: price,
         },
       },
     ],
-    success_url: `${origin}/enroll-success?session_id={CHECKOUT_SESSION_ID}&course_id=123456`,
+    success_url: `${origin}/enroll-success?session_id={CHECKOUT_SESSION_ID}&course_id=${courseId}`,
     cancel_url: `${origin}/dashboard`,
     ui_mode: "hosted",
     mode: "payment",

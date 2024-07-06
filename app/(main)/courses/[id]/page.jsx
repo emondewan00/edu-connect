@@ -4,18 +4,16 @@ import Testimonials from "./_components/Testimonials";
 import RelatedCourses from "./_components/RelatedCourses";
 import { getCourse } from "@/queries/courses";
 import connectDB from "@/lib/connectDB";
-import { replaceMongoIdInArray } from "@/lib/convertData";
+import { replaceMongoIdInArray, replaceMongoIdInObject } from "@/lib/convertData";
 
 const SingleCoursePage = async ({ params: { id } }) => {
   await connectDB();
-  const course = await getCourse(id);
+  let course = await getCourse(id);
+  course = replaceMongoIdInObject(course);
+  
   return (
     <>
-      <CourseIntro
-        subTitle={course.subtitle}
-        thumbnail={course.thumbnail}
-        title={course.title}
-      />
+      <CourseIntro course={course} />
       <CourseDetails course={course} />
       {/* Testimonials */}
 

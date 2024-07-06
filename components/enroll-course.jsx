@@ -4,13 +4,17 @@ import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { createCheckoutSession } from "@/actions/stripe";
 
-const EnrollCourse = ({ variant }) => {
+const EnrollCourse = ({ variant, course }) => {
   const formAction = async (data) => {
     const { url } = await createCheckoutSession(data);
     window.location.assign(url);
   };
+  console.log(course, "course");
   return (
     <form action={formAction}>
+      <input type="hidden" name="courseId" value={course.id} />
+      <input type="hidden" name="courseName" value={course.title} />
+      <input type="hidden" name="price" value={course.price} />
       {variant === "ghost" ? (
         <Button
           variant="ghost"
