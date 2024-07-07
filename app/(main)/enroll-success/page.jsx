@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { stripe } from "@/lib/stripe";
 import { getCourse } from "@/queries/courses";
+import { enrollCourse } from "@/queries/enrollments";
 import { getUserById } from "@/queries/users";
 import { CircleCheck } from "lucide-react";
 import Link from "next/link";
@@ -23,10 +24,23 @@ const Success = async ({ searchParams: { session_id, course_id } }) => {
   const paymentIntent = checkoutSession.payment_intent;
   const paymentStatus = checkoutSession.status;
 
-
   if (paymentStatus === "complete") {
-  
-  
+    const enrollData = {
+      enrollment_data: Date.now(),
+      status: "not-started",
+      method: "stripe",
+      course: course_id,
+      student: user?.id,
+    };
+
+    const enrolled = await enrollCourse(enrollData);
+
+    console.log(enrolled, "complete");
+    
+
+    // Add logic to save the payment intent ID to the database
+    // or update the course enrollment status
+    // You can also send an email confirmation to the user
   }
 
   return (

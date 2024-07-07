@@ -1,14 +1,13 @@
 import mongoose, { Schema } from "mongoose";
 
 const enrollmentSchema = new Schema({
-  enrollmentDate: {
+  enrollment_date: {
     type: Date,
     default: Date.now,
   },
   status: {
     type: String,
-    enum: ["Completed", "In Progress"],
-    default: "In Progress",
+    required: true,
   },
   completion_date: {
     type: Date,
