@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
+import { sendEmails } from "@/lib/email";
 import { stripe } from "@/lib/stripe";
 import { getCourse } from "@/queries/courses";
 import { enrollCourse } from "@/queries/enrollments";
@@ -21,7 +22,6 @@ const Success = async ({ searchParams: { session_id, course_id } }) => {
     expand: ["line_items", "payment_intent"],
   });
 
-  const paymentIntent = checkoutSession.payment_intent;
   const paymentStatus = checkoutSession.status;
 
   if (paymentStatus === "complete") {
@@ -35,12 +35,32 @@ const Success = async ({ searchParams: { session_id, course_id } }) => {
 
     const enrolled = await enrollCourse(enrollData);
 
-    console.log(enrolled, "complete");
-    
+    // Check if the user has already enrolled in the course
+    if (!enrolled.alreadyEnrolled) {
+      const instructorName =
+        course.instructor.first_name + " " + course.instructor.last_name;
+      const instructorEmail = course.instructor.email;
+      const customerName = user.first_name + " " + user.last_name;
+      const customerEmail = user.email;
+      const productName = course.title;
 
-    // Add logic to save the payment intent ID to the database
-    // or update the course enrollment status
-    // You can also send an email confirmation to the user
+      const emailsToSend = [
+        {
+          to: instructorEmail,
+          subject: `New Enrollment for ${productName}.`,
+          message: `Congratulations, ${instructorName}. A new student, ${customerName} has enrolled to your course ${productName} just now. Please check the instructor dashboard and give a high-five to your new student.`,
+        },
+        {
+          to: customerEmail,
+          subject: `Enrollment Success for ${productName}`,
+          message: `Hey ${customerName} You have successfully enrolled for the course ${productName}`,
+        },
+      ];
+
+      const emailSendResponse = await sendEmails(emailsToSend);
+
+      console.log(emailSendResponse,"email send response");
+    }
   }
 
   return (

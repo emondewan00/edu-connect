@@ -20,8 +20,8 @@ export const enrollCourse = async (course) => {
     course: course.course,
     student: course.student,
   }).lean();
-  if (findIfExists._id) return "already enrolled ";
+  if (findIfExists?._id) return { alreadyEnrolled: true };
 
   await Enrollment.create(course);
-  return "Enrolled successfully";
+  return { alreadyEnrolled: false };
 };
