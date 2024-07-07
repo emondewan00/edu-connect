@@ -3,12 +3,12 @@ import { Category } from "@/model/category-model";
 import { User } from "@/model/user-model";
 import { Testimonial } from "@/model/testimonial-model";
 import { Module } from "@/model/module-model";
-import {
-  replaceMongoIdInArray,
-} from "@/lib/convertData";
+import { replaceMongoIdInArray } from "@/lib/convertData";
 import { getEnrollmentsByCourseId } from "./enrollments";
 import { getTestimonialsByCourseId } from "./testimonial";
+import connectDB from "@/lib/connectDB";
 export const getCourses = async () => {
+  await connectDB();
   const courses = await Course.find()
     .populate({
       path: "category",
@@ -31,6 +31,7 @@ export const getCourses = async () => {
 };
 
 export const getCourse = async (id) => {
+  await connectDB();
   const course = await Course.findById(id)
     .populate({
       path: "category",
@@ -57,6 +58,7 @@ export const getCourse = async (id) => {
 };
 
 export const getCourseByInstructor = async (id) => {
+  await connectDB();
   const courses = await Course.find({ instructor: id }).lean();
   const enrollments = await Promise.all(
     courses.map(async (course) => {
