@@ -6,6 +6,6 @@ import { User } from "@/model/user-model";
 
 export const getUserById = async (id) => {
   await connectDB();
-  const user = await User.findById(id).lean();
+  const user = await User.findById(id).select({ password: 0, __v: 0 }).lean();
   return replaceMongoIdInObject(user);
 };
