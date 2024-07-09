@@ -14,3 +14,8 @@ export const updateUserInfo = async (email, data) => {
     return { message: "Error updating user info", success: false };
   }
 };
+
+export const changePassword = async (email, oldPassword, newPassword) => {
+  try {
+  } catch (error) {}
+};
