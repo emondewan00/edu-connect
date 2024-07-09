@@ -22,10 +22,13 @@ const userSchema = new Schema({
   phone: {
     type: String,
   },
+  designation: {
+    type: String,
+  },
   role: {
     type: String,
     required: true,
-    default:"student",
+    default: "student",
   },
   bio: {
     type: String,
