@@ -2,7 +2,9 @@
 
 import connectDB from "@/lib/connectDB";
 import { User } from "@/model/user-model";
+import { validatePassword } from "@/queries/users";
 import { revalidatePath } from "next/cache";
+import { signOut } from "@/auth";
 
 export const updateUserInfo = async (email, data) => {
   try {
@@ -17,5 +19,14 @@ export const updateUserInfo = async (email, data) => {
 
 export const changePassword = async (email, oldPassword, newPassword) => {
   try {
-  } catch (error) {}
+    await connectDB();
+    const isValidPassword = await validatePassword(email, oldPassword);
+    if (!isValidPassword) return { message: "Invalid password" };
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await User.updateOne({ email }, { password: hashedPassword });
+    signOut();
+    return { message: "Password changed successfully", success: true };
+  } catch (error) {
+    return { message: "Error changing password", success: false };
+  }
 };
