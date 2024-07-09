@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Menu from "./account-menu";
+import { getUserById } from "@/queries/users";
+import { auth } from "@/auth";
 
-const AccountSidebar = () => {
+const AccountSidebar = async () => {
+  const session = await auth();
+  const user = await getUserById(session.user.id);
+  const fullName = user?.first_name + " " + user?.last_name;
   return (
     <div className="lg:w-1/4 md:px-3">
       <div className="relative">
@@ -30,8 +35,8 @@ const AccountSidebar = () => {
                 />
               </div>
               <div className="mt-4">
-                <h5 className="text-lg font-semibold">Jenny Jimenez</h5>
-                <p className="text-slate-400">jennyhot@hotmail.com</p>
+                <h5 className="text-lg font-semibold">{fullName}</h5>
+                <p className="text-slate-400">{user?.email}</p>
               </div>
             </div>
           </div>
