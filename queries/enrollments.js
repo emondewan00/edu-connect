@@ -32,4 +32,11 @@ export const enrollCourse = async (course) => {
   return { alreadyEnrolled: false };
 };
 
-
+export const hasEnrollmentForCourse = async (courseId, userId) => {
+  await connectDB();
+  const enrollment = await Enrollment.findOne({
+    course: courseId,
+    student: userId,
+  }).lean();
+  return !!enrollment;
+};
