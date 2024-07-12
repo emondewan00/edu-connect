@@ -13,10 +13,10 @@ const reportSchema = new Schema({
     ref: "User",
     required: true,
   },
-  quizAssignment: {
+  quizAssessment: {
     type: Schema.ObjectId,
-    ref: "QuizAssessment",
     required: true,
+    ref: "Assessment",
   },
   createdAt: { type: Date, default: Date.now },
 });
