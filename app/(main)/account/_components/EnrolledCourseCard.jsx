@@ -24,7 +24,7 @@ const EnrolledCourseCard = async ({ course }) => {
 
   const totalQuizTaken = quizzesTaken?.length.toString().padStart(2, 0);
 
-  const totalCorrect = quizzesTaken.reduce((acc, quiz) => {
+  const totalCorrect = quizzesTaken?.reduce((acc, quiz) => {
     const options = quiz.options;
     const correctAnswers = options.filter(
       (option) => option.isCorrect && option.isSelected
@@ -37,6 +37,7 @@ const EnrolledCourseCard = async ({ course }) => {
   const otherMarks = report?.quizAssessment?.otherMarks;
 
   const totalMarks = otherMarks + totalCorrect * 5;
+
 
   return (
     <div className="group hover:shadow-sm transition overflow-hidden border rounded-lg p-3 h-full">
@@ -99,7 +100,7 @@ const EnrolledCourseCard = async ({ course }) => {
             </p>
 
             <p className="text-md md:text-sm font-medium text-slate-700">
-              {otherMarks.toString().padStart(2, 0)}
+              {otherMarks?.toString().padStart(2, 0)}
             </p>
           </div>
         </div>

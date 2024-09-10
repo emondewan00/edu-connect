@@ -7,6 +7,7 @@ import { replaceMongoIdInArray } from "@/lib/convertData";
 import { getEnrollmentsByCourseId } from "./enrollments";
 import { getTestimonialsByCourseId } from "./testimonial";
 import connectDB from "@/lib/connectDB";
+import { ConnectionStates } from "mongoose";
 export const getCourses = async () => {
   await connectDB();
   const courses = await Course.find()
@@ -66,6 +67,15 @@ export const getCourseByInstructor = async (id) => {
       return enrollment;
     })
   );
+  const groupByCourses = Object.groupBy(
+    enrollments.flat(),
+    ({ course }) => course
+  );
+
+  const totalRevenue = courses.reduce((total, course) => {
+    return total + groupByCourses[course._id].length * course.price;
+  }, 0);
+
   const totalEnrollments = enrollments.reduce((totalEnrollment, enrollment) => {
     return totalEnrollment + enrollment.length;
   }, 0);
@@ -86,5 +96,6 @@ export const getCourseByInstructor = async (id) => {
     totalEnrollments,
     reviews: totalTestimonials.length,
     ratings: avgTestimonials.toFixed(2),
+    totalRevenue,
   };
 };

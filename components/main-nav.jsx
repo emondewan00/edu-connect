@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +23,21 @@ import { useSession, signOut } from "next-auth/react";
 export function MainNav({ items, children }) {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const session = useSession();
+
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  useEffect(() => {
+    async function fetchMe() {
+      try {
+        const response = await fetch("http://localhost:3000/api/me");
+        const data = await response.json();
+        setLoggedInUser(data);
+      } catch (error) {
+        console.error("Error fetching user data", error);
+      }
+    }
+    fetchMe();
+  }, [session]);
 
   return (
     <>
@@ -83,10 +98,10 @@ export function MainNav({ items, children }) {
               <div className="cursor-pointer">
                 <Avatar>
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
+                    src={loggedInUser?.profilePicture}
+                    alt={loggedInUser.first_name}
                   />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarFallback>{loggedInUser.first_name}</AvatarFallback>
                 </Avatar>
               </div>
             </DropdownMenuTrigger>
@@ -94,6 +109,11 @@ export function MainNav({ items, children }) {
               <DropdownMenuItem className="cursor-pointer" asChild>
                 <Link href="/account">Profile</Link>
               </DropdownMenuItem>
+              {loggedInUser.role === "instructor" && (
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link href="/dashboard">Dashboard</Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem className="cursor-pointer" asChild>
                 <Link href="/account/enrolled-courses">My Courses</Link>
               </DropdownMenuItem>
