@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatPrice } from "@/lib/formatPrice";
 import { cn } from "@/lib/utils";
 import { GraduationCap } from "lucide-react";
 import { Star } from "lucide-react";
@@ -42,15 +43,12 @@ export const columns = [
     },
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price") || "0");
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
+      const formatted = formatPrice(price);
       return <div>{formatted}</div>;
     },
   },
   {
-    accessorKey: "isPublished",
+    accessorKey: "active",
     header: ({ column }) => {
       return (
         <Button
@@ -62,11 +60,11 @@ export const columns = [
       );
     },
     cell: ({ row }) => {
-      const isPublished = row.getValue("isPublished") || false;
+      const active = row.getValue("active") || false;
 
       return (
-        <Badge className={cn("bg-gray-500", isPublished && "bg-success")}>
-          {isPublished ? "Published" : "Unpublished"}
+        <Badge className={cn("bg-gray-500", active && "bg-success")}>
+          {active ? "Published" : "Unpublished"}
         </Badge>
       );
     },

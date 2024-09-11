@@ -58,7 +58,7 @@ export const getCourse = async (id) => {
   return course;
 };
 
-export const getCourseByInstructor = async (id) => {
+export const getCourseByInstructor = async (id, expend) => {
   await connectDB();
   const emptyRes = {
     courses: 0,
@@ -71,6 +71,7 @@ export const getCourseByInstructor = async (id) => {
   if (!id) {
     return emptyRes;
   }
+
   const courses = await Course.find({ instructor: id }).lean();
 
   if (courses.length === 0) {
@@ -83,18 +84,22 @@ export const getCourseByInstructor = async (id) => {
       return enrollment;
     })
   );
+
   const groupByCourses = Object.groupBy(
     enrollments.flat(),
     ({ course }) => course
   );
 
   const totalRevenue = courses.reduce((total, course) => {
-    return total + groupByCourses[course._id].length * course.price;
+    return (
+      total + (groupByCourses[course._id]?.length || 0) * (course.price || 0)
+    );
   }, 0);
 
   const totalEnrollments = enrollments.reduce((totalEnrollment, enrollment) => {
-    return totalEnrollment + enrollment.length;
+    return totalEnrollment + (enrollment?.length || 0);
   }, 0);
+
   const testimonials = await Promise.all(
     courses.map(async (course) => {
       const testimonial = await getTestimonialsByCourseId(course._id);
@@ -103,10 +108,24 @@ export const getCourseByInstructor = async (id) => {
   );
 
   const totalTestimonials = testimonials.flat();
+
   let avgTestimonials = totalTestimonials.reduce((acc, testimonial) => {
-    return acc + testimonial.rating;
+    return acc + (testimonial?.rating || 0);
   }, 0);
-  avgTestimonials /= totalTestimonials.length;
+
+  avgTestimonials =
+    totalTestimonials.length > 0
+      ? avgTestimonials / totalTestimonials.length
+      : 0;
+
+  if (expend) {
+    return {
+      courses,
+      reviews: totalTestimonials,
+      enrollments: enrollments.flat(),
+    };
+  }
+
   return {
     courses: courses.length,
     totalEnrollments,
