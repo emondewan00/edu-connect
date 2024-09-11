@@ -99,3 +99,15 @@ export const getCourseByInstructor = async (id) => {
     totalRevenue,
   };
 };
+
+export const create = async (course) => {
+  try {
+    await connectDB();
+    const newCourse = new Course(course);
+    await newCourse.save();
+    return newCourse;
+  } catch (error) {
+    throw new Error(error);
+    console.log(error);
+  }
+};
