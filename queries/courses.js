@@ -7,10 +7,10 @@ import { replaceMongoIdInArray } from "@/lib/convertData";
 import { getEnrollmentsByCourseId } from "./enrollments";
 import { getTestimonialsByCourseId } from "./testimonial";
 import connectDB from "@/lib/connectDB";
-import { ConnectionStates } from "mongoose";
+
 export const getCourses = async () => {
   await connectDB();
-  const courses = await Course.find()
+  const courses = await Course.find({ active: true })
     .populate({
       path: "category",
       model: Category,
@@ -60,7 +60,23 @@ export const getCourse = async (id) => {
 
 export const getCourseByInstructor = async (id) => {
   await connectDB();
+  const emptyRes = {
+    courses: 0,
+    totalEnrollments: 0,
+    reviews: 0,
+    ratings: 0,
+    totalRevenue: 0,
+  };
+
+  if (!id) {
+    return emptyRes;
+  }
   const courses = await Course.find({ instructor: id }).lean();
+
+  if (courses.length === 0) {
+    return emptyRes;
+  }
+
   const enrollments = await Promise.all(
     courses.map(async (course) => {
       const enrollment = await getEnrollmentsByCourseId(course._id);
@@ -104,10 +120,10 @@ export const create = async (course) => {
   try {
     await connectDB();
     const newCourse = new Course(course);
-    await newCourse.save();
-    return newCourse;
+    const result = await newCourse.save();
+    return result;
   } catch (error) {
-    throw new Error(error);
     console.log(error);
+    throw new Error(error);
   }
 };
